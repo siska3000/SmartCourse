@@ -102,7 +102,7 @@ public class CourseService {
     }
 
 
-    public List<StudentDTO> findStudentWithoutCourse(){
+    public List<StudentDTO> getStudentWithoutCourse(){
         List<Student> students = studentRepo.findStudentsWhereCourseIsEmpty();
 
         return students.stream().map(student -> StudentDTO.builder()
@@ -111,5 +111,25 @@ public class CourseService {
                         .email(student.getEmail())
                         .dateOfBirth(student.getDateOfBirth())
                         .build()).toList();
+    }
+
+
+    public List<CourseDTO> getAlmostFullCourses(){
+        List<Course> courses = courseRepo.findAlmostFullCourses();
+        return courses.stream().map(course -> CourseDTO.builder()
+                .courseDescription(course.getDescription())
+
+                .courseTitle(course.getTitle())
+                .instructorName(course.getInstructor()
+                        .getFullName())
+
+                .studentNames(course.getStudents()
+                        .stream()
+                        .map(Student::getFirstName)
+                        .toList())
+                .build()).toList();
+
+
+
     }
 }

@@ -64,7 +64,13 @@ public class CourseController {
     @GetMapping(value = "studentsWithoutCourse", produces = "application/json")
     public List<StudentDTO> getStudentsWithoutCourse() {
         log.info("Showed list of students without course");
-        return courseService.findStudentWithoutCourse();
+        return courseService.getStudentWithoutCourse();
+    }
+
+    @GetMapping(value = "almostFullCourses", produces = "application/json")
+    public List<CourseDTO> getAlmostFullCourses() {
+        log.info("Showed list of courses which are almost full (currentEnrollment almost as maxCapacity)");
+        return courseService.getAlmostFullCourses();
     }
 
 }
