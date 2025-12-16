@@ -9,8 +9,10 @@ import com.project.smartcourse.repo.InstructorRepo;
 import com.project.smartcourse.repo.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional//use @Transactional in your Service to keep the session open when you need to access the list.
 public class CreateService {
 
     final CourseRepo courseRepo;

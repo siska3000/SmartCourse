@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Instructor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +26,7 @@ public class Instructor {
 
     // FIX 1: Add mappedBy to avoid extra join table
     // FIX 2: Initialize the list to avoid NullPointerException
-    @OneToMany(mappedBy = "instructor")
+    @OneToMany(mappedBy = "instructor")// Tells JPA: "Look at the 'instructor' field in Course to find the config"
     private List<Course> courses = new ArrayList<>();
 
 }

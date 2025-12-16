@@ -61,4 +61,10 @@ public class CourseController {
         return courseService.getInstructorCourses(id);
     }
 
+    @GetMapping(value = "studentsWithoutCourse", produces = "application/json")
+    public List<StudentDTO> getStudentsWithoutCourse() {
+        log.info("Showed list of students without course");
+        return courseService.findStudentWithoutCourse();
+    }
+
 }

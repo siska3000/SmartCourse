@@ -13,10 +13,12 @@ import com.project.smartcourse.repo.InstructorRepo;
 import com.project.smartcourse.repo.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class CourseService {
 
     final CourseRepo courseRepo;
@@ -97,5 +99,17 @@ public class CourseService {
                 .email(student.getEmail())
                 .dateOfBirth(student.getDateOfBirth())
                 .build();
+    }
+
+
+    public List<StudentDTO> findStudentWithoutCourse(){
+        List<Student> students = studentRepo.findStudentsWhereCourseIsEmpty();
+
+        return students.stream().map(student -> StudentDTO.builder()
+                        .firstName(student.getFirstName())
+                        .lastName(student.getLastName())
+                        .email(student.getEmail())
+                        .dateOfBirth(student.getDateOfBirth())
+                        .build()).toList();
     }
 }
