@@ -7,6 +7,9 @@ import com.project.smartcourse.exceptions.ResourceNotFoundException;
 import com.project.smartcourse.service.CourseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,9 +59,14 @@ public class CourseController {
 
 
     @GetMapping(value = "instructorCourses/{id}", produces = "application/json")
-    public List<CourseDTO> getInstructorCourses(@PathVariable int id) {
+    public Page<CourseDTO> getInstructorCourses(@PathVariable int id,
+        @PageableDefault(//or we can configure Pageable locally here
+            size = 2,
+            sort = "id")
+            Pageable pageable)
+    {
         log.info("Showed instructors list of courses, with instructorId {}", id);
-        return courseService.getInstructorCourses(id);
+        return courseService.getInstructorCourses(id, pageable  );
     }
 
     @GetMapping(value = "studentsWithoutCourse", produces = "application/json")

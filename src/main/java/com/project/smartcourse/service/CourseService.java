@@ -6,12 +6,13 @@ import com.project.smartcourse.dto.StudentDTO;
 import com.project.smartcourse.exceptions.CourseFullException;
 import com.project.smartcourse.exceptions.ResourceNotFoundException;
 import com.project.smartcourse.model.Course;
-import com.project.smartcourse.model.Instructor;
 import com.project.smartcourse.model.Student;
 import com.project.smartcourse.repo.CourseRepo;
 import com.project.smartcourse.repo.InstructorRepo;
 import com.project.smartcourse.repo.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,10 +58,9 @@ public class CourseService {
 
 
     public CourseDTO getCourse(int id) throws ResourceNotFoundException {
-        if (courseRepo.findById(id).isEmpty()) {
-            throw new ResourceNotFoundException("Course with this id does not exists");
-        }
-        Course course = courseRepo.findById(id).get();
+        Course course = courseRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
+
         return CourseDTO.builder()
                 .courseDescription(course.getDescription())
 
@@ -76,18 +76,28 @@ public class CourseService {
     }
 
 
-    public List<CourseDTO> getInstructorCourses(int id) {
-        Instructor instructor = instructorRepo.getReferenceById(id);
-        List<Course> courses = instructor.getCourses();
+    public Page<CourseDTO> getInstructorCourses(int id, Pageable pageable) {
+        Page<Course> coursePage =
+                courseRepo.findByInstructorId(id, pageable);
 
-        return courses.stream()
-                .map(course -> {
+        return coursePage.map(course -> {
             try {
                 return getCourse(course.getId());
             } catch (ResourceNotFoundException e) {
                 throw new RuntimeException(e);
             }
-        }).toList();
+        });
+//        Instructor instructor = instructorRepo.getReferenceById(id);
+//        List<Course> courses = instructor.getCourses();
+//
+//        return courses.stream()
+//                .map(course -> {
+//            try {
+//                return getCourse(course.getId());
+//            } catch (ResourceNotFoundException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }).toList();
     }
 
     public StudentDTO findStudentByFirstName(String name) {
@@ -116,18 +126,13 @@ public class CourseService {
 
     public List<CourseDTO> getAlmostFullCourses(){
         List<Course> courses = courseRepo.findAlmostFullCourses();
-        return courses.stream().map(course -> CourseDTO.builder()
-                .courseDescription(course.getDescription())
-
-                .courseTitle(course.getTitle())
-                .instructorName(course.getInstructor()
-                        .getFullName())
-
-                .studentNames(course.getStudents()
-                        .stream()
-                        .map(Student::getFirstName)
-                        .toList())
-                .build()).toList();
+        return courses.stream().map(course -> {
+            try {
+                return getCourse(course.getId());
+            } catch (ResourceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
 
 
 
