@@ -24,24 +24,24 @@ public class InstructorController {
 
 
     @PostMapping(value = "/instructor")
-    public Instructor createInstructor(@RequestBody Instructor instructor) {
+    public void createInstructor(@RequestBody Instructor instructor) {
         log.info("created Instructor");
-        return createService.addInstructor(instructor);
+        createService.addInstructor(instructor);
     }
 
 
     @PostMapping(value = "/student")
-    public Student createStudent(@RequestBody Student student) {
+    public void createStudent(@RequestBody Student student) {
         log.info("created Student");
-        return createService.addStudent(student);
+        createService.addStudent(student);
     }
 
 
     @PostMapping(value ="/course")
-    public Course createCourse(@RequestBody Course course) {
+    public void createCourse(@RequestBody Course course) {
         try {
             log.info("created Course with id {}, and assigned Instructor to it with id {}", course.getId(), course.getInstructor().getId());
-            return createService.saveCourseAndAssignInstructor(course);
+            createService.saveCourseAndAssignInstructor(course);
         } catch (ResourceNotFoundException e) {
             throw new RuntimeException(e);
         }

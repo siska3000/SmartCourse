@@ -77,9 +77,7 @@ public class CourseService {
 
 
     public Page<CourseDTO> getInstructorCourses(int id, Pageable pageable) {
-        Page<Course> coursePage =
-                courseRepo.findByInstructorId(id, pageable);
-
+        Page<Course> coursePage = courseRepo.findByInstructorId(id, pageable);
         return coursePage.map(course -> {
             try {
                 return getCourse(course.getId());
@@ -87,17 +85,13 @@ public class CourseService {
                 throw new RuntimeException(e);
             }
         });
-//        Instructor instructor = instructorRepo.getReferenceById(id);
-//        List<Course> courses = instructor.getCourses();
-//
-//        return courses.stream()
-//                .map(course -> {
-//            try {
-//                return getCourse(course.getId());
-//            } catch (ResourceNotFoundException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }).toList();
+    }
+
+    public Page<StudentDTO> getStudentWithoutCourse(Pageable pageable){
+        Page<Student> studentPage = studentRepo.findStudentWhereCourseIsEmpty(pageable);
+        return studentPage
+                .map(student ->
+                        findStudentByFirstName(student.getFirstName()));
     }
 
     public StudentDTO findStudentByFirstName(String name) {
@@ -111,17 +105,6 @@ public class CourseService {
                 .build();
     }
 
-
-    public List<StudentDTO> getStudentWithoutCourse(){
-        List<Student> students = studentRepo.findStudentsWhereCourseIsEmpty();
-
-        return students.stream().map(student -> StudentDTO.builder()
-                        .firstName(student.getFirstName())
-                        .lastName(student.getLastName())
-                        .email(student.getEmail())
-                        .dateOfBirth(student.getDateOfBirth())
-                        .build()).toList();
-    }
 
 
     public List<CourseDTO> getAlmostFullCourses(){

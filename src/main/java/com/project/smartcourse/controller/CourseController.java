@@ -66,13 +66,13 @@ public class CourseController {
             Pageable pageable)
     {
         log.info("Showed instructors list of courses, with instructorId {}", id);
-        return courseService.getInstructorCourses(id, pageable  );
+        return courseService.getInstructorCourses(id, pageable);
     }
 
     @GetMapping(value = "studentsWithoutCourse", produces = "application/json")
-    public List<StudentDTO> getStudentsWithoutCourse() {
+    public Page<StudentDTO> getStudentsWithoutCourse(Pageable pageable) {
         log.info("Showed list of students without course");
-        return courseService.getStudentWithoutCourse();
+        return courseService.getStudentWithoutCourse(pageable);
     }
 
     @GetMapping(value = "almostFullCourses", produces = "application/json")

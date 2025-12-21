@@ -26,7 +26,7 @@ public class CreateService {
         this.instructorRepo = instructorRepo;
     }
 
-    public Course saveCourseAndAssignInstructor(Course course) throws ResourceNotFoundException {
+    public void saveCourseAndAssignInstructor(Course course) throws ResourceNotFoundException {
         Instructor instructor = course.getInstructor();
         if (instructor == null) {
             throw new IllegalArgumentException("Course must have an instructor assigned before saving.");
@@ -41,15 +41,15 @@ public class CreateService {
         course.setInstructor(instructor);
 
 
-        return courseRepo.save(course);
+        courseRepo.save(course);
     }
 
-    public Instructor addInstructor(Instructor instructor) {
-        return instructorRepo.save(instructor);
+    public void addInstructor(Instructor instructor) {
+        instructorRepo.save(instructor);
     }
 
 
-    public Student addStudent(Student student) {
-        return studentRepo.save(student);
+    public void addStudent(Student student) {
+        studentRepo.save(student);
     }
 }
